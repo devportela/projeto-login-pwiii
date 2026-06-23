@@ -11,23 +11,6 @@ if(!$con){
     exit();
 }
 
-/* excluir */
-
-if(isset($_GET['excluir'])){
-
-    $id = $_GET['excluir'];
-
-    $sql = $con->prepare("DELETE FROM usuario WHERE id = :id");
-
-    $sql->bindValue(":id", $id);
-
-    if($sql->execute()){
-
-        header("Location: tabela.php");
-
-        exit();
-    }
-}
 
 /* editar registro  */
 
@@ -212,13 +195,6 @@ if(isset($_GET['id'])){
         >
 
     </form>
-
-    <a 
-        class="excluir"
-        href="editar.php?excluir=<?php echo $dados['id']; ?>"
-    >
-        Excluir Usuario
-    </a>
 
 </div>
 

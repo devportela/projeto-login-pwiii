@@ -1,19 +1,11 @@
 <?php
-require "Usuario.class.php";
+
+require "../php/Usuario.class.php";
 
 $usuario = new Usuario();
 
 $con = $usuario->conecta();
 
-if($con){
-
-    $user = $usuario->listarUsuarios();
-
-    if(empty($user)){
-
-        echo "Não ha usuarios para listar!";
-
-    }else{
 ?>
 
 <!DOCTYPE html>
@@ -22,136 +14,99 @@ if($con){
 <head>
 
     <meta charset="UTF-8">
-
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
 
-    <title>Tabela de Usuarios</title>
+    <title>Tabela de Usuários</title>
 
-    <style>
-
-        *{
-            margin: 0;
-            padding: 0;
-            box-sizing: border-box;
-            font-family: Arial, Helvetica, sans-serif;
-        }
-
-        body{
-            background: #eaf3ff;
-            display: flex;
-            justify-content: center;
-            align-items: center;
-            min-height: 100vh;
-        }
-
-        .container{
-            background: white;
-            padding: 30px;
-            border-radius: 12px;
-            box-shadow: 0 0 15px rgba(0,0,0,0.1);
-        }
-
-        h1{
-            text-align: center;
-            color: #0066cc;
-            margin-bottom: 20px;
-        }
-
-        table{
-            border-collapse: collapse;
-            width: 700px;
-        }
-
-        th, td{
-            border: 1px solid #ccc;
-            padding: 12px;
-            text-align: center;
-        }
-
-        th{
-            background: #0066cc;
-            color: white;
-        }
-
-        tr:nth-child(even){
-            background: #f5f9ff;
-        }
-
-        a{
-            text-decoration: none;
-            color: #0066cc;
-            font-weight: bold;
-        }
-
-        a:hover{
-            text-decoration: underline;
-        }
-
-    </style>
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet">
 
 </head>
 
-<body>
-
-<div class="container">
-
-    <h1>Usuarios Cadastrados</h1>
-
-    <table>
-
-        <tr>
-            <th>Código</th>
-            <th>Nome</th>
-            <th>Email</th>
-            <th>Senha</th>
-            <th colspan="2">Ações</th>
-        </tr>
-
-        <?php
-        foreach($user as $item){
-        ?>
-
-        <tr>
-
-            <td><?php echo $item['id']; ?></td>
-
-            <td><?php echo $item['nome']; ?></td>
-
-            <td><?php echo $item['email']; ?></td>
-
-            <td><?php echo $item['senha']; ?></td>
-
-            <td>
-                <a href="editar.php?id=<?php echo $item['id']; ?>">
-                    Editar
-                </a>
-            </td>
-
-            <td>
-                <a href="excluir.php?id=<?php echo $item['id']; ?>">
-                    Excluir
-                </a>
-            </td>
-
-        </tr>
-
-        <?php
-        }
-        ?>
-
-    </table>
-
-</div>
-
-</body>
-
-</html>
+<body class="container mt-5">
 
 <?php
+
+if (!$con) {
+
+    echo "Banco indisponível. Tente mais tarde!";
+    exit();
+
+} else {
+
+    echo "<a href='../php/cadastrar.php' class='btn btn-success my-3'>
+            Novo Usuário
+          </a>";
+
+    $usuarios = $usuario->listarUsuarios();
+
+    if (empty($usuarios)) {
+
+        echo "<div class='alert alert-warning'>
+                Não há usuários para listar!
+              </div>";
+
+    } else {
+
+        $table = '<table class="table table-striped">';
+
+        $table .= '<thead>';
+
+        $table .= '<tr>';
+        $table .= '<th>Selecionar Usuário</th>';
+        $table .= '<th>Código</th>';
+        $table .= '<th>Nome</th>';
+        $table .= '<th>Email</th>';
+        $table .= '<th>Ações</th>';
+        $table .= '<th></th>';
+        $table .= '</tr>';
+
+        $table .= '</thead>';
+
+        $table .= '<tbody>';
+
+        foreach ($usuarios as $item) {
+
+            $id = $item['id'];
+            $nome = $item['nome'];
+            $email = $item['email'];
+
+            $table .= '<tr>';
+
+            $table .= '<td>
+                        <input type="checkbox" value="'.$id.'">
+                       </td>';
+
+            $table .= '<td>'.$id.'</td>';
+            $table .= '<td>'.$nome.'</td>';
+            $table .= '<td>'.$email.'</td>';
+
+            $table .= '<td>
+                        <a class="btn btn-info"
+                           href="editar.php?id='.$id.'">
+                           Editar
+                        </a>
+                       </td>';
+
+            $table .= '<td>
+                        <a class="btn btn-danger"
+                           href="excluir.php?id='.$id.'">
+                           Excluir
+                        </a>
+                       </td>';
+
+            $table .= '</tr>';
+        }
+
+        $table .= '</tbody>';
+        $table .= '</table>';
+
+        echo $table;
     }
-
-}else{
-
-    echo "Banco indisponivel. Tente mais tarde!";
 }
+
 ?>
+
+<script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js"></script>
+
+</body>
+</html>
